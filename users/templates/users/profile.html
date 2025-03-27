@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container d-flex flex-column align-items-center mt-5">
+    <h1 class="fw-bold">Welcome, {{ user.username }}!</h1>
+
+    <div class="card shadow-lg p-4 text-center" style="max-width: 400px;">
+        <div class="profile-pic mb-3">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle border border-3" width="150">
+            {% else %}
+                <div class="placeholder border rounded-circle d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; background-color: #f8f9fa;">
+                    <span class="text-muted">No Image</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <h4 class="mb-1">{{ user.first_name }} {{ user.last_name }}</h4>
+        <p class="text-muted">@{{ user.username }}</p>
+        <p class="text-muted">{{ user.email }}</p>
+
+        <a href="{% url 'users:profile_edit' %}" class="btn btn-dark w-100">Edit Profile</a>
+    </div>
+</div>
+{% endblock %}

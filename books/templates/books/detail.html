@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}📖 {{ book.title }} - Book Detail{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                {% if book.cover %}
+                    <img src="{{ book.cover.url }}" alt="{{ book.title }} Cover" class="img-fluid rounded shadow-lg">
+                {% else %}
+                    <img src="{% static 'images/default-book-cover.png' %}" alt="No Cover Image"
+                         class="img-fluid rounded shadow-lg">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <h1 class="fw-bold text-primary">{{ book.title }}</h1>
+                <span class="fst-italic">
+                    Authored by
+                    {% for book_author in book.bookauthor_set.all %}
+                        {% if forloop.last %}
+                            {{ book_author.author.full_name }}
+                        {% else %}
+                            {{ book_author.author.full_name }},
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                <p class="fs-5">{{ book.description }}</p>
+            </div>
+        </div>
+
+        <h2 class="mt-5">💬 Reviews</h2>
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="card p-3 mb-3 shadow-sm border-0">
+                    <div class="d-flex align-items-center">
+                        {% if review.user.profile_picture %}
+                            <img src="{{ review.user.profile_picture.url }}" alt="User's picture"
+                                 class="rounded-circle me-3 border border-2 shadow-sm" width="50" height="50">
+                        {% else %}
+                            <img src="{% static 'images/default-avatar.png' %}" alt="Default Avatar"
+                                 class="rounded-circle me-3 border border-2 shadow-sm" width="50" height="50">
+                        {% endif %}
+                        <div>
+                            <strong class="fs-5">{{ review.user.username }}</strong>
+                            <span class="badge bg-warning text-dark ms-2">⭐ {{ review.stars_given }}</span>
+                            <small class="text-muted d-block">{{ review.created_at }}</small>
+                        </div>
+                    </div>
+                    <p class="mt-2 ms-5">{{ review.comment }}</p>
+
+                    {% if request.user == review.user %}
+                        <div class="ms-5">
+                            <a href="{% url 'books:review_update' review.pk %}" class="btn btn-sm btn-outline-primary me-2">Update</a>
+                            <a href="{% url 'books:review_delete' review.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">📢 No reviews yet. Be the first to review!</div>
+        {% endif %}
+
+        <h3 class="mt-5">✍️ Add a Review</h3>
+        <form method="post" class="card p-4 shadow-sm border-0 bg-light mt-3">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Your Review:</label>
+                {{ form.comment }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Rating (1-5 Stars):</label>
+                {{ form.stars_given }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold">Submit Review 🚀</button>
+        </form>
+    </div>
+{% endblock %}

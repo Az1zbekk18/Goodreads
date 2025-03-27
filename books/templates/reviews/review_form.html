@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+    <div class="card shadow-sm p-4">
+      <h2 class="mb-3">Update Review</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Comment:</label>
+          {{ form.comment }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Stars given:</label>
+          {{ form.stars_given }}
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Update</button>
+      </form>
+      <div class="text-center mt-3">
+        <a href="{% url 'books:detail' pk=object.book.pk %}" class="text-danger">Cancel</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    textarea, input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    textarea {
+      min-height: 120px;
+    }
+    .card {
+      max-width: 600px;
+      margin: auto;
+      border-radius: 10px;
+    }
+  </style>
+{% endblock %}

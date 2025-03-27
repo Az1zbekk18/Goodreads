@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card shadow-lg p-4 border-0 rounded-4">
+            <h2 class="text-center mb-4">Edit Profile</h2>
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Username:</label>
+                    {{ form.username }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email:</label>
+                    {{ form.email }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">First name:</label>
+                    {{ form.first_name }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Last name:</label>
+                    {{ form.last_name }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Profile picture:</label>
+                    {% if form.instance.profile_picture %}
+                        <div class="mb-2">
+                            <img src="{{ form.instance.profile_picture.url }}" alt="Profile Picture" class="img-thumbnail" width="150">
+                        </div>
+                    {% endif %}
+                    {{ form.profile_picture }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 fw-bold">Save Changes</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

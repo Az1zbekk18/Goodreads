@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Books Page{% endblock %}
+
+{% block content %}
+    <style>
+        .books-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .book-card {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-height: 150px;
+            overflow: hidden;
+        }
+
+        .book-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .book-card img {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-info {
+            margin-left: 15px;
+        }
+
+        .book-info a {
+            font-size: 16px;
+            font-weight: bold;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .book-info a:hover {
+            color: #0056b3;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 8px 12px;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .pagination a:hover {
+            background: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            .books-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <div class="container mt-4">
+        <h1 class="mb-3">📚 Books</h1>
+
+        <form method="GET" action="{% url 'books:list' %}" class="d-flex mb-4">
+            <input type="text" name="q" class="form-control me-2" placeholder="Search books..." value="{{ request.GET.q }}">
+            <button class="btn btn-success">Search</button>
+        </form>
+
+        {% if books %}
+            <div class="books-container">
+                {% for book in books %}
+                    <div class="book-card">
+                        {% if book.cover %}
+                            <img src="{{ book.cover.url }}" alt="{{ book.title }} Cover">
+                        {% endif %}
+                        <div class="book-info">
+                            <a href="{% url 'books:detail' book.id %}">{{ book.title }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="text-center">No books found.</p>
+        {% endif %}
+    </div>
+
+{% endblock %}
